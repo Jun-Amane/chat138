@@ -19,6 +19,8 @@ create table chat138db.chat138_user
 ) collate = utf8mb4_unicode_ci;
 
 
+-- 以下密码没有加密，初始化数据库后，使用`GET /api/auth/encoded-all-pwd`后门接口加密所有密码
+
 INSERT INTO chat138db.chat138_user (userCode, userName, userPassword, gender, birthday, phone, address, userRole, createdBy, creationDate, modifyBy, modifyDate) VALUES ('admin', '系统管理员', 'admin', 0, '1983-10-10', '13688889999', '北京市海淀区成府路207号', 0, 1, '2013-03-21 16:52:07', 1, '2025-01-04 21:15:10');
 INSERT INTO chat138db.chat138_user (userCode, userName, userPassword, gender, birthday, phone, address, userRole, createdBy, creationDate, modifyBy, modifyDate) VALUES ('liming', '李明', '123', 1, '1983-12-10', '13688884457', '北京市东城区前门东大街9号', 1, 1, '2014-12-31 19:52:09', 1, '2025-01-04 21:15:10');
 INSERT INTO chat138db.chat138_user (userCode, userName, userPassword, gender, birthday, phone, address, userRole, createdBy, creationDate, modifyBy, modifyDate) VALUES ('hanlubiao', '韩路彪', '123', 1, '1984-06-05', '18567542321', '北京市朝阳区北辰中心12号', 1, 1, '2014-12-31 19:52:09', 1, '2025-01-04 21:15:10');
