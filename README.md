@@ -134,6 +134,13 @@ mvn spring-boot:run
 
 ## 运行截图
 
+![1](screenshoots/1.png)
+![1](screenshoots/2.png)
+![1](screenshoots/3.png)
+![1](screenshoots/4.png)
+![1](screenshoots/5.png)
+![1](screenshoots/6.png)
+
 ## 开源许可
 
 本软件是自由软件，按照GNU GPL-3.0许可证开源，可以自由分发。

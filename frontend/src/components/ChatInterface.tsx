@@ -1,14 +1,38 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Typography,
+  Breadcrumbs,
+  Link,
+  Alert,
+  Snackbar,
+  CircularProgress,
+  TablePagination,
+  Tooltip,
+  Chip,
+  Stack,
+  useTheme,
   List,
   ListItem,
   ListItemText,
-  CircularProgress,
-  useTheme,
   InputAdornment,
   Avatar,
 } from "@mui/material";
@@ -124,170 +148,162 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ uuid }) => {
   };
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: theme.palette.background.default,
-      }}
-    >
-      <NavBar />
-      <Box sx={{ display: "flex", flexGrow: 1 }}>
-        <Box
-          sx={{
-            flexGrow: 1,
-            display: "flex",
-            flexDirection: "column",
-            bgcolor: "#F4F4F4",
-          }}
-        >
-          <Typography
-            variant="subtitle1"
-            sx={{ p: 2, color: theme.palette.text.secondary }}
-          >
-            AgriSageLite Knowledge Base
-          </Typography>
-
-          <Box
+    <Box sx={{ height: "90vh", display: "flex", flexDirection: "column" }}>
+      {/* Page Header */}
+      <Box sx={{ mb: 4, px: 2, pt: 2 }}>
+        <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
+          AgriSageLite Knowledge Base
+        </Typography>
+        <Breadcrumbs>
+          <Link
+            color="inherit"
+            href="/dashboard"
             sx={{
-              flexGrow: 1,
-              overflowY: "auto",
-              px: { xs: 2, sm: 4, md: 6 },
-              py: 2,
-              "&::-webkit-scrollbar": { width: "0.4em" },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "rgba(0,0,0,.1)",
-                borderRadius: "10px",
-              },
+              textDecoration: "none",
+              "&:hover": { textDecoration: "underline" },
             }}
           >
-            <List>
-              {messages.map((message, index) => (
-                <ListItem
-                  key={index}
+            首页
+          </Link>
+          <Typography color="text.primary">AI对话</Typography>
+        </Breadcrumbs>
+      </Box>
+
+      {/* 聊天消息部分 */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: "auto",
+          px: { xs: 2, sm: 4, md: 6 },
+          py: 2,
+          "&::-webkit-scrollbar": { width: "0.4em" },
+          "&::-webkit-scrollbar-thumb": {
+            borderRadius: "10px",
+          },
+        }}
+      >
+        <List>
+          {messages.map((message, index) => (
+            <ListItem
+              key={index}
+              sx={{
+                justifyContent:
+                  message.role == "user" ? "flex-end" : "flex-start",
+                mb: 1,
+                alignItems: "flex-start",
+              }}
+            >
+              {!(message.role == "user") && (
+                <Avatar
                   sx={{
-                    justifyContent:
-                      message.role == "user" ? "flex-end" : "flex-start",
-                    mb: 1,
-                    alignItems: "flex-start",
+                    bgcolor:
+                      message.role == "error"
+                        ? theme.palette.error.main
+                        : theme.palette.secondary.main,
+                    mr: 1,
                   }}
                 >
-                  {!(message.role == "user") && (
-                    <Avatar
-                      sx={{
-                        bgcolor:
-                          message.role == "error"
-                            ? theme.palette.error.main
-                            : theme.palette.secondary.main,
-                        mr: 1,
-                      }}
-                    >
-                      {message.role == "error" ? (
-                        <ErrorIcon />
-                      ) : (
-                        <SmartToyIcon />
-                      )}
-                    </Avatar>
-                  )}
-                  <Box
-                    sx={{
-                      p: 2,
-                      bgcolor:
-                        message.role == "user"
-                          ? theme.palette.primary.light
-                          : message.role == "error"
-                            ? theme.palette.error.light
-                            : theme.palette.background.paper,
-                      color:
-                        message.role == "user"
-                          ? theme.palette.primary.contrastText
-                          : message.role == "error"
-                            ? theme.palette.error.contrastText
-                            : theme.palette.text.primary,
-                      borderRadius:
-                        message.role == "user"
-                          ? "20px 20px 0 20px"
-                          : "20px 20px 20px 0",
-                      maxWidth: "70%",
-                      wordBreak: "break-word",
-                      boxShadow: 1,
-                    }}
-                  >
-                    {isTyping ? (
-                      <TypewriterEffect
-                        text={message.content}
-                        onComplete={() => handleTypingComplete()}
-                      />
-                    ) : (
-                      <ListItemText
-                        primary={message.content}
-                        primaryTypographyProps={{
-                          sx: { wordBreak: "break-word" },
-                        }}
-                        secondaryTypographyProps={{ fontSize: "0.75rem" }}
-                      />
-                    )}
-                  </Box>
-                  {message.role == "user" && (
-                    <Avatar sx={{ bgcolor: theme.palette.primary.main, ml: 1 }}>
-                      <PersonIcon />
-                    </Avatar>
-                  )}
-                </ListItem>
-              ))}
-            </List>
-            <div ref={messagesEndRef} />
-          </Box>
-
-          <Box sx={{ p: 2, bgcolor: "#F4F4F4" }}>
-            <Box sx={{ maxWidth: 800, mx: "auto" }}>
-              <TextField
-                fullWidth
-                multiline
-                minRows={1}
-                maxRows={4}
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder="请输入问题…"
-                disabled={isLoading}
-                variant="outlined"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => handleSendMessage()}
-                        disabled={isLoading || input.trim() === ""}
-                      >
-                        {isLoading ? (
-                          <CircularProgress size={24} />
-                        ) : (
-                          <SendIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                  sx: {
-                    bgcolor: theme.palette.background.paper,
-                    borderRadius: "20px",
-                    "& fieldset": { border: "none" },
-                  },
-                }}
-              />
-              <Typography
-                variant="caption"
+                  {message.role == "error" ? <ErrorIcon /> : <SmartToyIcon />}
+                </Avatar>
+              )}
+              <Box
                 sx={{
-                  mt: 1,
-                  display: "block",
-                  textAlign: "center",
-                  color: theme.palette.text.secondary,
+                  p: 2,
+                  bgcolor:
+                    message.role == "user"
+                      ? theme.palette.primary.light
+                      : message.role == "error"
+                        ? theme.palette.error.light
+                        : theme.palette.background.paper,
+                  color:
+                    message.role == "user"
+                      ? theme.palette.primary.contrastText
+                      : message.role == "error"
+                        ? theme.palette.error.contrastText
+                        : theme.palette.text.primary,
+                  borderRadius:
+                    message.role == "user"
+                      ? "20px 20px 0 20px"
+                      : "20px 20px 20px 0",
+                  maxWidth: "70%",
+                  wordBreak: "break-word",
+                  boxShadow: 1,
                 }}
               >
-                大模型可能会出错，请注意甄别。按 Ctrl + Enter 发送。
-              </Typography>
-            </Box>
-          </Box>
+                {isTyping ? (
+                  <TypewriterEffect
+                    text={message.content}
+                    onComplete={() => handleTypingComplete()}
+                  />
+                ) : (
+                  <ListItemText
+                    primary={message.content}
+                    primaryTypographyProps={{
+                      sx: { wordBreak: "break-word" },
+                    }}
+                    secondaryTypographyProps={{ fontSize: "0.75rem" }}
+                  />
+                )}
+              </Box>
+              {message.role == "user" && (
+                <Avatar sx={{ bgcolor: theme.palette.primary.main, ml: 1 }}>
+                  <PersonIcon />
+                </Avatar>
+              )}
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+
+      {/* 输入框，固定底部 */}
+      <Box
+        sx={{
+          p: 2,
+          borderTop: `1px solid ${theme.palette.divider}`,
+          bgcolor: theme.palette.background.default,
+        }}
+      >
+        <Box sx={{ maxWidth: 800, mx: "auto" }}>
+          <TextField
+            fullWidth
+            multiline
+            minRows={1}
+            maxRows={4}
+            value={input}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder="请输入问题…"
+            disabled={isLoading}
+            variant="outlined"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => handleSendMessage()}
+                    disabled={isLoading || input.trim() === ""}
+                  >
+                    {isLoading ? <CircularProgress size={24} /> : <SendIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+              sx: {
+                bgcolor: theme.palette.background.paper,
+                borderRadius: "20px",
+                "& fieldset": { border: "none" },
+              },
+            }}
+          />
+          <Typography
+            variant="caption"
+            sx={{
+              mt: 1,
+              display: "block",
+              textAlign: "center",
+              color: theme.palette.text.secondary,
+            }}
+          >
+            大模型可能会出错，请注意甄别。按 Ctrl + Enter 发送。
+          </Typography>
         </Box>
       </Box>
     </Box>
