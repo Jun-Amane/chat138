@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moe.zzy040330.chat138.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="User">
+        <id property="id" column="id"/>
+        <result property="code" column="userCode"/>
+        <result property="name" column="userName"/>
+        <result property="password" column="userPassword"/>
+        <result property="gender" column="gender"/>
+        <result property="birthday" column="birthday"/>
+        <result property="phone" column="phone"/>
+        <result property="address" column="address"/>
+        <result property="creationDate" column="creationDate"/>
+        <result property="modificationDate" column="modifyDate"/>
+        <result property="role" column="userRole" />
+
+        <association property="createdBy" javaType="User">
+            <id property="id" column="createdBy"/>
+        </association>
+
+        <association property="modifiedBy" javaType="User">
+            <id property="id" column="modifyBy"/>
+        </association>
+    </resultMap>
+
+
+    <!-- select -->
+    <select id="findById" resultType="User" resultMap="UserResultMap">
+        SELECT u.*
+        FROM chat138_user AS u
+        WHERE u.id = #{ID}
+    </select>
+
+    <select id="findAll" resultType="User" resultMap="UserResultMap">
+        SELECT u.*
+        FROM chat138_user AS u
+    </select>
+
+    <!-- insert -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO chat138_user(
+        userCode,
+        userName,
+        userPassword,
+        gender,
+        birthday,
+        phone,
+        address,
+        modifyBy,
+        modifyDate,
+        createdBy,
+        creationDate,
+        userRole)
+        VALUES (
+        #{code},
+        #{name},
+        #{password},
+        #{gender},
+        #{birthday},
+        #{phone},
+        #{address},
+        #{modifiedBy.id},
+        #{modificationDate},
+        #{createdBy.id},
+        #{creationDate},
+        #{role})
+    </insert>
+
+    <!-- modify -->
+    <update id="update">
+        UPDATE chat138_user
+        <set>
+            <if test="name != null and name != ''">
+                userName = #{name},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="role != null">
+                userRole = #{role},
+            </if>
+            modifyBy=#{modifiedBy.id},
+            modifyDate=#{modificationDate}
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <!-- delete -->
+    <delete id="deleteById">
+        DELETE FROM chat138_user
+        WHERE id=#{id}
+    </delete>
+
+    <!-- login -->
+    <select id="findByCodeAndPassword" resultType="User" resultMap="UserResultMap">
+        SELECT u.*
+        FROM chat138_user AS u
+        WHERE userCode = #{code} AND userPassword = #{password}
+    </select>
+
+    <!-- query -->
+    <select id="findAllUsersByQuery" resultType="User" resultMap="UserResultMap">
+        SELECT u.*
+        FROM chat138_user AS u
+        <where>
+            <if test="name != null and name != ''">
+                u.userName LIKE CONCAT('%', #{name}, '%')
+            </if>
+
+            <if test="roleId != null">
+                AND u.userRole = #{roleId}
+            </if>
+        </where>
+        ORDER BY u.id
+    </select>
+
+    <!-- change password -->
+    <update id="updateUserPassword">
+        UPDATE chat138_user
+        <set>
+            <if test="password != null and password != ''">
+                userPassword = #{password},
+            </if>
+            modifyBy = #{modifiedBy.id},
+            modifyDate = #{modificationDate}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- find by code -->
+    <select id="findByCode" resultType="User" resultMap="UserResultMap">
+        SELECT u.*
+        FROM chat138_user AS u
+        WHERE userCode = #{code}
+    </select>
+
+</mapper>

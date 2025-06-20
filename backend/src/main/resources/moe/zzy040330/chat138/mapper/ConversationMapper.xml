@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="moe.zzy040330.chat138.mapper.ConversationMapper">
+    <resultMap id="ConversationResultMap" type="Conversation">
+        <id property="id" column="id"/>
+        <result property="uuid" column="uuid"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="summary" column="summary"/>
+
+    </resultMap>
+
+
+    <insert id="insert" parameterType="Conversation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO conversation (uuid, user_id, create_time, update_time, summary)
+        VALUES (#{uuid}, #{userId}, NOW(), NOW(), #{summary})
+    </insert>
+
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM conversation WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="Conversation">
+        UPDATE conversation
+        SET summary = #{summary},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="findById" parameterType="long" resultType="Conversation" resultMap="ConversationResultMap">
+        SELECT * FROM conversation WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultType="Conversation">
+        SELECT * FROM conversation ORDER BY update_time DESC
+    </select>
+
+    <select id="findByUuid" parameterType="string" resultType="Conversation" resultMap="ConversationResultMap">
+        SELECT * FROM conversation WHERE uuid = #{uuid}
+    </select>
+
+    <select id="findByUserId" parameterType="long" resultType="Conversation" resultMap="ConversationResultMap">
+        SELECT * FROM conversation WHERE user_id = #{userId} ORDER BY update_time DESC
+    </select>
+
+</mapper>
