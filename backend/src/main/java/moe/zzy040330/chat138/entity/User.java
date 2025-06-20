@@ -35,6 +35,7 @@ public class User {
     private Date modificationDate;
 
     public User() {
+        this.calculateAge();
     }
 
     public User(Long id, String code, String name, String password, Integer gender, Date birthday, String phone, String address, Integer role, Integer age, User createdBy, Date creationDate, User modifiedBy, Date modificationDate) {
@@ -52,6 +53,7 @@ public class User {
         this.creationDate = creationDate;
         this.modifiedBy = modifiedBy;
         this.modificationDate = modificationDate;
+        this.calculateAge();
     }
 
     private void calculateAge() {
